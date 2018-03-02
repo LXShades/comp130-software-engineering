@@ -1,6 +1,6 @@
 # comp130-software-engineering
 
-# Proposal: Which C++ architecture(s) could best support QOS-oriented map streaming in a player-building-based multiplayer game?
+# Proposal: Which C++ architecture(s) could best support QoE-oriented map streaming in a player-building-based multiplayer game?
 Free-to-play multiplayer games enjoy a high popularity in poorer countries such as China, Brazil and Mexico, yet the lower broadband speeds in these areas can pose a particular challenge to games with persistent player-built worlds. This type of world requires the server to upload level data periodically to players in order for them to enjoy the latest version of an area as they enter it. The game may thus employ several different compression, prioritisation and/or data rate compensation techniques in order to achieve smooth gameplay, even on a reliable network.  
 
 The asset download period is critical for players, as the data they receive determines which parts of the game they can play whilst the rest downloads in the background. Broadband speeds remain notoriously unreliable, especially in developing countries, so in order for games to be accessible to this wider market, they must reduce their bandwidth while still providing enough data to be playable during the download period. This includes reordering the data stream, with a priority on the player's best interests, such as their abilities first, in a concept more broadly known as quality-of-experience (QoE).  
