@@ -4,6 +4,24 @@
 - Ghinea's research: http://ieeexplore.ieee.org.ezproxy.falmouth.ac.uk/search/searchresult.jsp?searchWithin=%22Authors%22:.QT.Gheorghita%20Ghinea.QT.&newsearch=true
 - Boost Asio
 
+# Articles of Interest
+http://ieeexplore.ieee.org/document/6772102/?section=abstract  
+http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6772102 (direct)
+*It was observed that the content genre has an
+impact on the viewer’s quality of experience. For
+example, the Sintel clip is ideal for young people as it
+tells a good story and hence keeps them engaged. The
+David and Laura clip is more suitable for professional
+people who have work experience. But equally
+important is the nature of the scene itself. During the
+preparation of the sequences, we noted that it was
+difficult to spot oscillations in image quality when
+there are frequent scene changes. It takes time for the
+mind to adjust to the new scene before really noticing
+the quality. This is known as the Weber-Fechner law
+[10].* 
+
+
 # Proposal: Which C++ architecture(s) could best support QoE-oriented map streaming in a player-building-based multiplayer game?
 Free-to-play multiplayer games enjoy a high popularity in poorer countries such as China, Brazil and Mexico, yet the lower broadband speeds in these areas can pose a particular challenge to games with persistent player-built worlds. This type of world requires the server to upload level data periodically to players in order for them to enjoy the latest version of an area as they enter it. The game may thus employ several different compression, prioritisation and/or data rate compensation techniques in order to achieve smooth gameplay, even on a reliable network.  
 
