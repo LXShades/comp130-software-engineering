@@ -1,0 +1,163 @@
+\documentclass{beamer}
+\usetheme{Boadilla}
+\usepackage{cite}
+
+% Look at other themes?
+
+\title{Architecting Effective Map Streaming in Low-Bandwidth Scenarios}
+\subtitle{An inspiring and amazing research question that everyone wants to know, but was too afraid to write a 2000-word essay about.}
+\author{Louis Foy}
+\institute{Falmouth University}
+\date{\today}
+
+\begin{document}
+\begin{frame}
+	\titlepage
+\end{frame}
+
+\section{The Question}
+\begin{frame}
+	\frametitle{The Question}
+	\begin{itemize}
+		\item Which C++ architecture(s) could best support QoE-oriented map streaming in a player-building-based multiplayer game?
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{A scenario}
+	\begin{itemize}
+		\item My company wants to make a large-scale, multiplayer building game
+		\item Players can build complex structures in real-time
+		\item It\textquoteright s releasing across the world
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{A problem}
+	\begin{itemize}
+		\item Map data downloads take a lot of bandwidth
+		\item Large markets, such as Egypt, Brazil, and China, suffer from slow broadband 
+		\begin{itemize}
+			\item Even though China is the world’s strongest gaming market! \cite{chinamarket}
+		\end{itemize}
+		\item This risks leaving players waiting for downloads
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Intro: QoE}
+\begin{itemize}
+	\item QoE means Quality of Experience
+	\item Focuses on directing data flow to the user’s best interests first
+	\begin{itemize}
+		\item For example, downloading their character’s running animations, before downloading the distant city of Goradonia
+	\end{itemize}
+	\item Commonly used in video streaming to balance motion and detail
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{User experience != bitrate}
+\begin{itemize}
+\item User experience is more complex!
+\item For example, evidence suggests users prefer a smooth low-quality video over higher-quality, inconsistent video \cite{qoesmallstudy} \cite{qoelargestudy}
+\item The amount of action in a scene can affect their perception \cite{qoelargestudy}
+\begin{itemize}
+\item More action, less focus on detail. Less action, more focus. Could this apply to games as well?
+\end{itemize}
+\item In a nutshell, intelligent prioritising of streams is key
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Prerequisites: Map streaming}
+\begin{itemize}
+	\item To identify ideal architectures for implementing QoE map streaming, let’s explore the necessary ingredients
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Prerequisites - Baseline}
+\begin{itemize}
+\item Map data uploader
+\begin{itemize}
+	\item Sends map data to clients
+\end{itemize}
+\item Map data downloader
+\begin{itemize}
+	\item Takes map data from server
+	\item Must tolerate incomplete data
+\end{itemize}
+\item Map constructor
+\begin{itemize}
+	\item Builds the map in real-time
+	\item May include collision generation, textures, and LoD
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Prerequisites - With QoE}
+\begin{itemize}
+	\item Map data prioritiser
+	\begin{itemize}
+		\item Decides which map data each player needs soonest
+		\item Must work with data uploader
+	\end{itemize}
+	\item Map data compressors
+	\begin{itemize}
+		\item Reduces bandwidth by brute force
+		\item Adds processing time on downloads: may introduce FPS lag
+	\end{itemize}
+	\item `Network LOD' generators
+	\begin{itemize}
+		\item Reduces details on distant player-made areas
+		\item Different to regular LOD--regular LOD is predefined on your local PC
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Preliminary architectural theories}
+\begin{itemize}
+\item Multi-threading
+\begin{itemize}
+	\item Could reduce distressing lag during downloads
+\end{itemize}
+\item Adapters?
+\begin{itemize}
+	\item Could wrap compressed map data into usable geometry
+\end{itemize}
+\item Observers?
+\begin{itemize}
+	\item Could live in the map class, awaiting incoming map data
+\end{itemize}
+\item Or mediators?
+\begin{itemize}
+	\item Alternative to data transferral between networked map data and geometry
+	\item Which one is better?
+\end{itemize}
+\item OOP?
+\begin{itemize}
+	\item OOP principles support all the above design patterns quite well
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{More to come}
+\begin{itemize}
+	\item More specific design patterns will be isolated pending further research into existing game titles
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Any questions?}
+\begin{itemize}
+	\item References:
+\end{itemize}
+\bibliographystyle{ieeetr}
+\bibliography{references_presentation}
+\end{frame}
+
+\end{document}
