@@ -1,0 +1,25 @@
+Appropriateness of Referenced Articles: 2-3, may need more scholarly research
+Relevance to and Focus on the Research Question: 2-3, research question is too vague
+Depth of Insight into Engineering Principles: 1 - Could use more technical detail on te problem
+Specifity, Verifiability of Claims: 3-4 - could just use some more citations
+Adequacy of Analysis of Research: 2 - needs to draw some more points from the articles
+Adequacy of Justification of Approached and Techniques: 2 - I mean, it was rushed. Solution doesn't refer explicitly to the game industry
+Appropriateness of Academic Writing: 3-4, hopefully
+Appropriateness of Spelling and Grammar: 4-5, hopefully!
+Appropriateness of Essay Structure: 3 - The conclusion might not pass as 'well-constructed', needed for a 4.
+
+Main areas of action:
+- Analysis of research, draw more points from articles
+- Depth of Insight, more technical detil
+- Consider rewriting the research question
+
+Notes:
+- Question seems to focus on 'What C++ architecture', which is a very broad question.
+- Consider alternatives: 
+  - How can parallelism benefit QoE-oriented map streaming?
+- Consider using something other than Google Trends to reference Fortnite and Minecraft.
+- Restructure 'low-detail constant frame streaming' sentence, and draw an interesting pointfrom it that can justify our eventual solution
+- 'While this is researched primarily in FPSes and MMOs rather than building games',
+- At the end of Existing Strategies, met=ntion that texture streaming might not be a factor and could eliminate the problem
+
+- Consider picking up Code Complete
