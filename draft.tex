@@ -12,7 +12,7 @@
 \newcommand{\source}[1]{\caption*{Source: {#1}} }
 % Above code sourced from Xavi, Stack Overflow, https://tex.stackexchange.com/questions/95029/add-source-to-figure-caption @ 20/03/2018
 
-\title{What C++ architecture could best support QoE-oriented map streaming in a player-building-based multiplayer game?}
+\title{What C++ architecture could best support Quality-of-Experience-oriented map streaming in a multiplayer building game?}
 \subtitle{COMP130 - Computing Architecture}
 \date{\today}
 \author{1707981}
@@ -22,13 +22,14 @@
 \pagenumbering{arabic}
 
 \begin{abstract}
-Low broadband speeds in large gaming markets such as China and Brazil could hinder the advancement of multiplayer gaming, particularly for traffic-hungry projects such as MMOs or building games. From a creative standpoint, player experience is decidedly the most important factor in a game's design. Low broadband bandwidth increases download speeds and strips players of valuable gaming time, causing frustration. To aid this, Quality-of-Experience (QoE) techniques are proposed to mitigate the negative effects of limited bandwidth on the player experience, in a way that could be adapted to existing games with minimal difficulty.
+Low broadband speeds across the world could hinder the advancement of multiplayer gaming, particularly for traffic-hungry projects such as MMOs or building games. From a creative standpoint, player experience is decidedly the most important factor in a game's design. When downloading the game environment, low bandwidth increases download speeds and temporarily strips players of their autonomy, causing frustration. To aid this, Quality-of-Experience (QoE) techniques are proposed to mitigate the negative effects of limited bandwidth on the player experience, in a way that could be adapted to existing games with minimal difficulty.
 \end{abstract}
 
 \section{Introduction}
 The games market is continuing to grow at an immense rate, especially in developing countries. In East Asia, a growth of nearly 15\% over the last year has been observed, as shown in Fig. \ref{fig:market}.
 
 \begin{figure}[H]
+	\centering
 	\includegraphics[width=0.75\linewidth]{Newzoo_2017_Global_Games_Market.png}
 	\caption{The games market in 2017, according to NewZoo (Source: \cite{globalmarketpic})}
 	\label{fig:market}
@@ -36,46 +37,94 @@ The games market is continuing to grow at an immense rate, especially in develop
 
 This presents profitable opportunities for game developers to expand into new territories. However, a lag in technological advancement, particularly broadband, raises reasonable concerns of whether they can fully exploit these opportunities. The potential of games where players can build the map, such as the extremely popular (as suggested by Google Trends \cite{minecraftnite}) Minecraft and Fortnite, may be hindered by a lack of bandwidth necessary to download player-built resources at an acceptable speed. A slow download of map resources may frustrate players by rendering them unable to access areas of the game in a timely manner.
 
-This study aims to discover the extent of this problem, followed by proposals of architectural methods to implement systems that could mitigate the negative effects of an unrealiable networking environment on the player experience. These can be described as QoE (quality-of-experience) improvements where the bandwidth is not improved, but the specific targeting of resources is. The programming language in question is C++, while the hypothetical game assumed a 3D environment wherein the player can manipulate the terrain and build meshes. The goal is to propose a reasonable set of design patterns to be used for QoE-oriented map streaming in a large-scale game, and how they could be applied to an existing game engine.
+This study aims to discover the extent of this problem, followed by proposals of architectural methods to implement systems that could mitigate the negative effects of an unreliable networking environment on the player experience. These can be described as QoE (Quality-of-Experience) improvements where the bandwidth is not improved, but instead coordinated where the player needs it most. The programming language in question is C++, while the hypothetical game assumed a 3D environment wherein the player can manipulate the terrain and build meshes. The goal is to propose a reasonable set of design patterns to be used for QoE-oriented map streaming in a large-scale game, and how they could be applied to an existing game engine.
 
 This analysis will take place over the following steps:
+
 \begin{itemize}
-\item Exploration into the games market, and its broadband speeds
-\item A brief introduction of player experience as a separate concept to content quality
-\item Existing strategies used by games for a) map streaming and b) online synchronisation, and
-\item A proposed technical outline of a system that could facilitate appropriate level streaming considering the aforementioned variables.
+\item Exploration into the games market and its broadband speeds
+\item A brief introduction to player experience as a separate concept to content quality
+\item Existing strategies used by games for map streaming
+\item A proposed technical outline of a system that could facilitate level streaming with priority on player experience
 \end{itemize}
 
-\section{The Wider, Slower Market}
-China is the most profitable games market as of 2017 \cite{chinamarket}. Furthermore, according to SteamSpy in March 2018, 8 of the 10 most popular Steam games in China were partly or fully multiplayer \cite{steamchina}. This suggests China is a valuable target for online games. However, compared to most developed countries, China's Internet speeds lag behind (figuratively speaking), at an average of 7.6Mbps \cite{webspeeds}. This inspires concerns that the potential of the multi-player gaming industry, particularly in asset-heavy games like building games, could be hindered in this potentially profitable region.
+\section{The Big, Slow Market}
+China is the most profitable games market as of 2017 \cite{chinamarket}. Furthermore, according to SteamSpy in March 2018, 8 of the 10 most popular Steam games in China were partly or fully multiplayer \cite{steamchina}. This suggests China is a valuable target for online games. However, compared to most developed countries, China's Internet speeds lag behind (figuratively speaking), at an average of 7.6Mbps \cite{webspeeds}.
 
-Similarly, another country notorious for its online gaming community is Brazil. According to SteamSpy, 9 of the top 10 games had a multiplayer component, with 8 boasting primarily multiplayer gameplay \cite{steambrazil}. Brazil's Internet speed average about the same--6.8Mbps--in 2017 \cite{webspeeds}. While a marked improvement over time is evident (doubling since 2015 \cite{webspeeds2015}), to the extent that low-bandwidth games such as FPSes are comfortably playable [cite?], it puts to question whether the development of large-scale player-built online games is halted by this lack of gross speed (an ironic failing for the world's fifth top source of DDoS attacks in early 2017 \cite{websecurity}).
+Similarly, another country notorious for its online gaming community is Brazil. According to SteamSpy, 9 of the top 10 games had a multiplayer component, with 8 boasting primarily multiplayer gameplay \cite{steambrazil}. Brazil's Internet speed averaged about the same--6.8Mbps--in 2017 \cite{webspeeds} (an ironic failing for the world's fifth top source of DDoS attacks in early 2017 \cite{websecurity}).
 
-There is a lack of definitive research of the impact of low broadband speed in games. Instead, many studies such as [CITE] are focused on reducing and optimising traffic. This is helpful to developers, but lacks a point of reference or scale, making it plausible that a developer could fear the unknown bottlenecks of slow broadband. Until this is further understood, it could be thus beneficial to design a system around scalable broadband speed, such that it can guarantee an acceptably 'fun' quality even in extremely slow network conditions. However, the definition of 'fun' may be at odds with the industry's tendency to create games that are bigger, more detailed, and overall more data-heavy as they evolve. (CITE) This prompts an exploration into what is 'fun', in a term more aptly described as quality of experience.
+Speeds in the UK and US meanwhile average at over twice as much, 16.9Mbps and 18.7Mbps respectively. While this study was originally expecting a bigger discrepancy, it could surmise that the map streaming engines of large-scale player-built online games will require optimisation to compensate the lack of data bandwidth compared to, for example, disk speeds. In the Sony PS4's case, streaming speed from the disc maxes out at 27MB/s (at a 1x speed of 36Mbps \cite{bluray} multiplied by 6 \cite{ps4specs})--a significantly higher rate than Brazil's average Internet speed of 6.8Mbps, or 0.85 MB/s. This is only 3\% of the typical disc data rate.
 
-\section{Quality of player experience}
-Video streaming is a heavily researched area; perhaps more than games, owing to greater dedicated R\&D toward streaming services such as the Amazon FireTV[cite?]. Considering the link between video quality and quality of gameplay aesthetic--including pixel resolution, lag spike rate, and frame rate--some preliminary conclusions about a player's interests can be drawn from this research.
+There is a lack of definitive research on the impact of low broadband speed in map streaming. Instead, many studies such as [CITE] are focused on reducing and optimising traffic. This is helpful to developers, but lacks a point of reference or scale in terms of user experience, making the actual negative impacts of low bandwidth relatively uncertain. Until this is further understood, it could be beneficial to design a system around scalable broadband speed, such that it can guarantee an acceptably 'fun' quality even in extremely slow network conditions. However, the definition of 'fun' may be at odds with the industry's tendency to create games that are bigger, more detailed, and overall more data-heavy as they evolve \cite{graphicsvsexperience}. This prompts an exploration into what is 'fun', in a term more aptly described as quality of experience.
 
-It has been documented \cite{qoelargestudy} that user enjoyment is greater in a scenario of low-detail, constant frame streaming, than one of higher-detail, inconsistent frame streaming. In other words, the user is not interested in the rate of high-detailed data--they are interested in enjoying a smoother experience.
+\section{Quality of player experience} \label{player}
+Video streaming is a heavily researched area; perhaps more than games, owing to significant dedicated R\&D toward streaming services such as the Amazon FireTV \cite{amazonresearch}. Yet considering the link between video quality and quality of gameplay aesthetic--including pixel resolution, lag spike rate, and frame rate--the basic principles and goals could perhaps apply to games as well.
 
-This smooth experience is also necessary to retain game players. Studies have noted latency \cite{qossensitivity} \cite{lagragequits}, jitter and packet loss \cite{lagragequits} to all have negative impacts, sometimes leading to quitting altogether. While this is not widely studied in building games--but FPSes and MMOs--games such as the recent and hugely popular (cite?) Fortnite, which feature both building elements and shooting gameplay, suggest that there may be new demand for player building in those contexts. The potential loss of players therefore justifies the development of strategies to improve the player experience on an unreliable network, especially considering the high traffic potential of level streaming (CITE THIS!).
+In the context of video, it has been documented \cite{qoelargestudy} that user enjoyment is greater in a scenario of low-detail, constant frame streaming, than one of higher-detail, inconsistent frame streaming. In other words, the user is not interested in the rate of high-detailed data, but in enjoying a smoother experience.
 
-\section{Streaming costs}
-A hypothetical budget map of descending streaming costs follows:
-- Textures
-- Leel geometry
-- Player animations
-- LOOK AT A GAME'S MEMORY BUDGET
+In the context of games, this smooth experience is also shown to be necessary to retain game players. Studies have noted latency \cite{qossensitivity} \cite{lagragequits}, jitter and packet loss \cite{lagragequits} to all have negative impacts, sometimes leading to quitting altogether. While this is not widely studied in building games--but FPSes and MMOs--games such as the recent and highly popular \cite{topgames} Fortnite, which features both building elements and shooting gameplay, demonstrates that the two are not necessarily mutually exclusive.
+
+Another study \cite{graphicsvsexperience} noted the importance of animations in a game. Similarly, this centres around the concept of motion, and as above, suggests that graphical detail is of smaller importance than the player's ability to gain immediate feedback. This is supported at a base psychological level by R. Ryan and E. Deci's reputable research on human motivation \cite{motivation} (especially reputable in that they have disproportionately few people to cite, other than themselves, throughout their entire paper), which notes a human desire to explore, apply their skills, and learn from the feedback.
+
+These findings place high importance on the motion, control, and abilities of the player rather than visual fidelity of the background. In map streaming, this translates to the importance of giving the player base landscapesto move within and toward. This places the level mesh, and perhaps interactive objects (noting the need for motion), above textures and sounds in the priority list.
+
+\section{Quality of experience -- Priorities}
+To maximise player experience, a preliminary priority list is thus proposed:
+
+\begin{itemize}
+	\item Player movement
+	\item Player avatar
+	\item Textureless nearby level geometry
+	\item Interactive objects
+	\item Player animations
+	\item Object animations
+	\item Textures
+	\item Miscellaneous
+\end{itemize}
+
+However, this is not an exact science. For example, level textures may come in a low-quality form before their final form. This would show evidence of loading progress to the player. While it could be argued as invasive, a player would likely deem this more favourable than--for example--a loading screen, as observed in software studies \cite{loadingscreens}. Furthermore, level textures might not necessarily be streamed, unless the players should be able to draw their own.
+
+While they are described above, the specifics of animation, player model, object and texture streaming are beyond the scope of this essay. They could, however, very likely be adapted in a similar fashion.
 
 \section{Existing strategies}
-Granted, it is fair to say player experience-driven streaming already exists, though this assumes a higher data rate, and takes the form of open-world streaming from disc. Engines such as the Unreal engine provide World Composition, allowing the world to be partly loaded in small sections as the player approaches them \cite{unrealcomposition}. This is characterised by the loading of reduced LOD (Level-of-Detail) versions of areas distant to the camera, and the high LOD versions of close areas. This hides detail in the distance at the benefit of reducing the memory footprint and rendering times: both a potential improvement to the asset download time and frame rate, and consequently an improvement to the player's perception of the game.
+Locality-based streaming prioritisation already exists, and is used in open-world games to save memory and loading times. Engines such as the Unreal Engine provide World Composition, allowing the world to be partly loaded in small sections as the player approaches them \cite{unrealcomposition}. This is characterised by the loading of low-LOD (Level-of-Detail) versions of level components distant to the camera, and the high-LOD versions of close ones, all in a background process. This hides level details in the distance at the benefit of reducing the memory footprint, hiding loading times, and increasing the frame rate. The latter two in particular improves the player's perception of the game motion, and provides data to the player in a spatially-aware manner such that the player has immediate access to the areas closest to them.
 
-This streaming method provides data to the player in a spatially-aware manner such that the player has fastest access to the area immediately around them. However, the key difference in the online equivalent system is the data rate. In the PS4 and Xbox One's case, static map streaming from the disc this defaults at 27MB/s (Cite this)--a significantly higher rate than China's average Internet speed of 7.6Mbps, or 0.95 MB/s. At only 4\% of the typical disc data rate, it is reasonable to question whether game level streaming is prepared for such a bottleneck.
+However, systems such as the above assume a higher data rate, and is typically sourced from a disk or hard disk. 
+
+\section{Proposal}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{Server_Side_Streamer.png}
+	\caption{Partial class diagram illustrating the potential map streaming server},
+	\label{fig:serversystem}
+\end{figure}
+
+The proposed system would comprise the following key classes:
+
+\textbf{Map}: Base map class. This is shared between the client and server. By partitioning the map into several 'chunks', separate pieces of it can be downloaded at a time, allowing the player to roam incomplete areas in short notice.
+\textbf{ChunkDestination}: A collection of \textbf{ChunkPacks} that may be implemented in multiple ways. In this case, it is connected to \textbf{MessageSender} for immediate transmission. In more advanced cases, it could also, at a later stage, be implemented on the client machine as a map storage manager, which could cache map data on a local machine for later use.
+\textbf{MapUpstreamer}: The MapUpstreamer is effectively a \textit{Mediator} (described as a class that manages the collaboration between objects \cite{designpatterns}) technically owned by neither Map nor ChunkDestination. This method was chosen so that MapUpstreamer could, if necessary, operate independently in parallel to the other tasks. An observer pattern could reasonably be used, but this typically means synchronising the data on an immediate basis \cite{designpatterns}, something which is not necessary for the time-sensitive task of prioritising the data flow.
+\textbf{BandwidthMonitor}: To achieve data rate consistency as likely desired by players (see Section \ref{player}), this class monitors bandwidth over time and adjusts the data rate to the most consistent possible. The specifics of this system, better described as bandwidth-smoothing, are beyond the scope of this essay. A broad comparison of bandwidth-smoothing techniques as illustrated by W. Feng and J. Rexford is recommended for further reading \cite{bandwidthsmoothing}.
+\textbf{ChunkPack}: This interface stores components of map data in various possible class-specific ways, and provides the function \textit{generateChunk} such that it can inject itself into the Map. An example of a subclass--\textbf{ChunkPack_Delta}--is demonstrated in Fig. \ref{fig:clientsystem}.
+
+The client side of the system we propose adopts the following hierarchy.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{Client_Side_Streamer.png}
+	\caption{Partial class diagram illustrating the potential map streaming client},
+	\label{fig:clientsystem}
+\end{figure}
+
+- The Map Streamer is a Listener class. This is to enable it to receive data from any input. A particular benefit of this approach is the ability to add different sources of data; for example, a local cache so that a player can return to a region without redownloading it.
+- The \textbf{ChunkPack} is an interface that can manipulate map chunks by inserting or removing data of its choice. By leaving this responsibility to the ChunkPack class, subclasses such as \textbf{ChunkPackDelta} can be created to manipulate the chunk data in a more efficient or specific way than pure replacement. Chunks could even be moved, should the programmer add the ability to move the Earth--a programming habit whose prevalence has no clear evidence otherwise. This enforces expandability, which has more general positive (Cite etc) benefits.
+The \textbf{TimeMonitor}'s role is to ensure the map chunk generation can take place without a significant drop in frame rate. However, in order for the map to download at all, it must provide a minimum time space in case the machine is too slow to achieve it. A more advanced system may communicate with a hypothetical \textbf{FPSNormaliser} class, which records past processing times and reduces the framerate to a fixed, achievable value smoothest possible.
+
 
 \section{Proposal}
 Due to an extreme lack of time and an extremely tired caffeine-free (and vitamin-deficient) author, a tacked-together solution is hastily proposed by this essay draft.
 
-\begin{figure}
+\begin{figure}[H]
 	\includegraphics[width=0.7\linewidth]{Basic_Map_Streamer}
 	\caption{A class diagram demonstrating a map streaming component connected to a basic Map class.}
 	\label{fig:simplesystem}

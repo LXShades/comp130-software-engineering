@@ -1,0 +1,32 @@
+Appropriateness of Referenced Articles (5%): 2-3, 6 academic, 17 total. Could use more academic.
+Relevance to and Focus on the Research Question (2.5%): 2-3, research question might not be explicit and focused enough
+Depth of Insight into Engineering Principles (15%): 2, not technical enough
+Specifity, Verifiability of Claims (2.5%): 4
+Adequacy of Analysis of Research (15%): 3, check for more analysis
+Adequacy of Justification of Approaches and Techniques (10%): 2, nonspecific technical solution needs more details
+Appropriateness of Academic Writing (5%): 3-4, so long as references section is complete
+Appropriateness of Spelling and Grammar (2.5%): 4-5, hopefully!
+Appropriateness of Essay Structure (2.5%): 3, conclusion could use more work
+
+
+Notes
+- Determine how to quote: Companies with unknown authors, Websites, etc.
+- Fix uncapitalised month names in references
+- 'The goal is to propose design patterns' - Instead propose an architecture, maybe focus less on the existing strategies
+- 'Exploration into the games market and its broadband speeds' : remove comma
+- Shorten some of the bullet points in the intro
+- 'This inspires concerns that the potential or the multi-player gaming industry' - change to 'games' and wording
+- 9 of the top games IN BRAZIL had a multiplayer component
+- 'Brazil's Internet speed averageD about the same'
+- The market section poses more questions than answers. Try drawing more links and finding answers
+- First paragraph of player experience could be removed. The next paragraph could be begin with 'in a study of video viewers', and then illustrate the potential link later, and link it to the game experience
+- ALso note how small sections can be joined together into one large level.
+- Proposal image is in the wrong place!!
+- The Existing Strategies section could be removed or replaced
+
+In the proposal:
+- Begin a flowchart that illustrates the process requires for priority streaming
+- Make an existing engine hiearchy, saying 'An existing engine might look like this.' Show all the classes and links between them
+- Follow it with, 'here we would propose the asset streaming to be added'. Expose functions to add in areas 
+- Follow with diagrams of the network download system, sending assets to the map. Explain that its data format could be shared with a locally-saved one.
+- Show effort in designing the imaginary systems to make them look super pretty

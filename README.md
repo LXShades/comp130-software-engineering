@@ -21,6 +21,9 @@ mind to adjust to the new scene before really noticing
 the quality. This is known as the Weber-Fechner law
 [10].* 
 
+placing a value on Aesthetics in Online Casual Games
+
+
 Book: https://www.vlebooks.com/vleweb/Product/Index/993586?page=0
 
 # Proposal: Which C++ architecture(s) could best support QoE-oriented map streaming in a player-building-based multiplayer game?
