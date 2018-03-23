@@ -37,14 +37,14 @@ The games market is continuing to grow at an immense rate, especially in develop
 
 This presents profitable opportunities for game developers to expand into new territories. However, a lag in technological advancement, particularly broadband, raises reasonable concerns of whether they can fully exploit these opportunities. The potential of games where players can build the map, such as the extremely popular (as suggested by Google Trends \cite{minecraftnite}) Minecraft and Fortnite, may be hindered by a lack of bandwidth necessary to download player-built resources at an acceptable speed. A slow download of map resources may frustrate players by rendering them unable to access areas of the game in a timely manner.
 
-This study aims to discover the extent of this problem, followed by proposals of architectural methods to implement systems that could mitigate the negative effects of an unreliable networking environment on the player experience. These can be described as QoE (Quality-of-Experience) improvements where the bandwidth is not improved, but instead coordinated where the player needs it most. The programming language in question is C++, while the hypothetical game assumed a 3D environment wherein the player can manipulate the terrain and build meshes. The goal is to propose a reasonable set of design patterns to be used for QoE-oriented map streaming in a large-scale game, and how they could be applied to an existing game engine.
+This study aims to discover the extent of this problem, followed by proposals of architectural methods to implement systems that could mitigate the negative effects of an unreliable networking environment on the player experience. These can be described as QoE (Quality-of-Experience) improvements where the bandwidth is not improved, but instead coordinated toward where the player needs it most. The programming language in question is C++, while the hypothetical game assumed a 3D environment wherein the player can manipulate the terrain and build meshes. The goal is to propose a reasonable set of design patterns to be used for QoE-oriented map streaming in a large-scale game, and how they could be applied to an existing game engine.
 
 This analysis will take place over the following steps:
 
 \begin{itemize}
-\item Exploration into the games market and its broadband speeds
-\item A brief introduction to player experience as a separate concept to content quality
-\item Existing strategies used by games for map streaming
+\item Exploration into the games market and its broadband speeds,
+\item A brief introduction to player experience as a separate concept to content quality, to gain an understanding of what should be prioritised,
+\item A priority list of assets and features of immediate interest to the player, and
 \item A proposed technical outline of a system that could facilitate level streaming with priority on player experience
 \end{itemize}
 
@@ -55,7 +55,7 @@ Similarly, another country notorious for its online gaming community is Brazil. 
 
 Speeds in the UK and US meanwhile average at over twice as much, 16.9Mbps and 18.7Mbps respectively. While this study was originally expecting a bigger discrepancy, it could surmise that the map streaming engines of large-scale player-built online games will require optimisation to compensate the lack of data bandwidth compared to, for example, disk speeds. In the Sony PS4's case, streaming speed from the disc maxes out at 27MB/s (at a 1x speed of 36Mbps \cite{bluray} multiplied by 6 \cite{ps4specs})--a significantly higher rate than Brazil's average Internet speed of 6.8Mbps, or 0.85 MB/s. This is only 3\% of the typical disc data rate.
 
-There is a lack of definitive research on the impact of low broadband speed in map streaming. Instead, many studies such as [CITE] are focused on reducing and optimising traffic. This is helpful to developers, but lacks a point of reference or scale in terms of user experience, making the actual negative impacts of low bandwidth relatively uncertain. Until this is further understood, it could be beneficial to design a system around scalable broadband speed, such that it can guarantee an acceptably 'fun' quality even in extremely slow network conditions. However, the definition of 'fun' may be at odds with the industry's tendency to create games that are bigger, more detailed, and overall more data-heavy as they evolve \cite{graphicsvsexperience}. This prompts an exploration into what is 'fun', in a term more aptly described as quality of experience.
+There is a lack of definitive research on the impact of low broadband speed in map streaming. A point of reference or scale in terms of user experience is therefore lacking, making the actual negative impacts of low bandwidth relatively uncertain. Until this is further understood, this essay will create the system around scalable broadband speed, aiming to guarantee an acceptably 'fun' quality even in extremely slow network conditions. However, the definition of 'fun' may be at odds with the industry's tendency to create games that are bigger, more detailed, and overall more data-heavy as they evolve \cite{graphicsvsexperience}. This prompts an exploration into what is 'fun', in a term more aptly described as quality of experience.
 
 \section{Quality of player experience} \label{player}
 Video streaming is a heavily researched area; perhaps more than games, owing to significant dedicated R\&D toward streaming services such as the Amazon FireTV \cite{amazonresearch}. Yet considering the link between video quality and quality of gameplay aesthetic--including pixel resolution, lag spike rate, and frame rate--the basic principles and goals could perhaps apply to games as well.
@@ -64,7 +64,7 @@ In the context of video, it has been documented \cite{qoelargestudy} that user e
 
 In the context of games, this smooth experience is also shown to be necessary to retain game players. Studies have noted latency \cite{qossensitivity} \cite{lagragequits}, jitter and packet loss \cite{lagragequits} to all have negative impacts, sometimes leading to quitting altogether. While this is not widely studied in building games--but FPSes and MMOs--games such as the recent and highly popular \cite{topgames} Fortnite, which features both building elements and shooting gameplay, demonstrates that the two are not necessarily mutually exclusive.
 
-Another study \cite{graphicsvsexperience} noted the importance of animations in a game. Similarly, this centres around the concept of motion, and as above, suggests that graphical detail is of smaller importance than the player's ability to gain immediate feedback. This is supported at a base psychological level by R. Ryan and E. Deci's reputable research on human motivation \cite{motivation} (especially reputable in that they have disproportionately few people to cite, other than themselves, throughout their entire paper), which notes a human desire to explore, apply their skills, and learn from the feedback.
+Another study \cite{graphicsvsexperience} noted the importance of animations in a game. Similarly, this centres around the concept of motion, and as above, suggests that graphical detail is of smaller importance than the player's ability to gain immediate feedback. This is supported at a base psychological level by R. Ryan and E. Deci's reputable research on human motivation \cite{motivation} (noteworthy in that they have disproportionately few people to cite, other than themselves, throughout their entire paper), which notes a human desire to explore, apply their skills, and learn from the feedback.
 
 These findings place high importance on the motion, control, and abilities of the player rather than visual fidelity of the background. In map streaming, this translates to the importance of giving the player base landscapesto move within and toward. This places the level mesh, and perhaps interactive objects (noting the need for motion), above textures and sounds in the priority list.
 
@@ -74,24 +74,23 @@ To maximise player experience, a preliminary priority list is thus proposed:
 \begin{itemize}
 	\item Player movement
 	\item Player avatar
-	\item Textureless nearby level geometry
+	\item Untextured level geometry (nearby)
 	\item Interactive objects
 	\item Player animations
 	\item Object animations
+	\item Untextured level geometry (distant, low-detail)
 	\item Textures
-	\item Miscellaneous
+	\item Additional resources
 \end{itemize}
 
 However, this is not an exact science. For example, level textures may come in a low-quality form before their final form. This would show evidence of loading progress to the player. While it could be argued as invasive, a player would likely deem this more favourable than--for example--a loading screen, as observed in software studies \cite{loadingscreens}. Furthermore, level textures might not necessarily be streamed, unless the players should be able to draw their own.
 
-While they are described above, the specifics of animation, player model, object and texture streaming are beyond the scope of this essay. They could, however, very likely be adapted in a similar fashion.
-
-\section{Existing strategies}
-Locality-based streaming prioritisation already exists, and is used in open-world games to save memory and loading times. Engines such as the Unreal Engine provide World Composition, allowing the world to be partly loaded in small sections as the player approaches them \cite{unrealcomposition}. This is characterised by the loading of low-LOD (Level-of-Detail) versions of level components distant to the camera, and the high-LOD versions of close ones, all in a background process. This hides level details in the distance at the benefit of reducing the memory footprint, hiding loading times, and increasing the frame rate. The latter two in particular improves the player's perception of the game motion, and provides data to the player in a spatially-aware manner such that the player has immediate access to the areas closest to them.
-
-However, systems such as the above assume a higher data rate, and is typically sourced from a disk or hard disk. 
+As an additional note, the specifics of animation, player model, object and texture streaming are beyond the scope of this essay, but are noted above for the reader's interest.
 
 \section{Proposal}
+The proposed system base, designed to prioritise the player experience, is illustrated below as two components, the client component and server component. These represent the game and the persistent online server, respectively.
+
+\subsection{Server system}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\linewidth]{Server_Side_Streamer.png}
@@ -101,36 +100,34 @@ However, systems such as the above assume a higher data rate, and is typically s
 
 The proposed system would comprise the following key classes:
 
-\textbf{Map}: Base map class. This is shared between the client and server. By partitioning the map into several 'chunks', separate pieces of it can be downloaded at a time, allowing the player to roam incomplete areas in short notice.
-\textbf{ChunkDestination}: A collection of \textbf{ChunkPacks} that may be implemented in multiple ways. In this case, it is connected to \textbf{MessageSender} for immediate transmission. In more advanced cases, it could also, at a later stage, be implemented on the client machine as a map storage manager, which could cache map data on a local machine for later use.
-\textbf{MapUpstreamer}: The MapUpstreamer is effectively a \textit{Mediator} (described as a class that manages the collaboration between objects \cite{designpatterns}) technically owned by neither Map nor ChunkDestination. This method was chosen so that MapUpstreamer could, if necessary, operate independently in parallel to the other tasks. An observer pattern could reasonably be used, but this typically means synchronising the data on an immediate basis \cite{designpatterns}, something which is not necessary for the time-sensitive task of prioritising the data flow.
-\textbf{BandwidthMonitor}: To achieve data rate consistency as likely desired by players (see Section \ref{player}), this class monitors bandwidth over time and adjusts the data rate to the most consistent possible. The specifics of this system, better described as bandwidth-smoothing, are beyond the scope of this essay. A broad comparison of bandwidth-smoothing techniques as illustrated by W. Feng and J. Rexford is recommended for further reading \cite{bandwidthsmoothing}.
-\textbf{ChunkPack}: This interface stores components of map data in various possible class-specific ways, and provides the function \textit{generateChunk} such that it can inject itself into the Map. An example of a subclass--\textbf{ChunkPack_Delta}--is demonstrated in Fig. \ref{fig:clientsystem}.
+\begin{itemize}
+\item \textbf{Map}: The base map class. This is shared between the client and server. By partitioning the map into several \textbf{MapChunks}, separate pieces of it can be downloaded at a time, allowing the player to roam incomplete areas in short notice.
+\item \textbf{MapChunk}: A portion of the map, with an index identifying the specific area of the level, and mesh information. The shape of a level chunk may vary across games, though in a building game, a uniform shape could be chosen such that there is consistency in the efficiency of building in one place over another. However, different games may use different strategies. For example, Sunset Overdrive (Insomniac Games, 2014) used hexagonal chunks by design and radial chunks in practice. This was optimised for the player's freedom of movement. However, an earlier game by the same company, Fuse (Insomniac Games, 2013), used rectangular chunks. This was optimised for linear hall-based gameplay \cite{overdrivegdc}.
+\item \textbf{ChunkDestination}: A collection of \textbf{ChunkPacks} that may be implemented in multiple ways. In this case, it is connected to \textbf{MessageSender} for immediate transmission. In more advanced cases, it could also, at a later stage, be implemented on the client machine as a map storage manager, which could cache map data on a local machine for later use.
+\item \textbf{MapUpstreamer}: The MapUpstreamer is effectively a \textit{Mediator} (described as a class that manages the collaboration between objects \cite{designpatterns}) technically owned by neither Map nor ChunkDestination. This method was chosen so that MapUpstreamer could, if necessary, operate independently in parallel to the other tasks. An observer pattern could reasonably be used, but this typically means synchronising the data on an immediate basis \cite{designpatterns}, something which is not necessary for the time-sensitive task of prioritising the data flow.
+\item \textbf{BandwidthMonitor}: To achieve data rate consistency as likely desired by players (see Section \ref{player}), this class monitors bandwidth over time and adjusts the data rate to the most consistent possible. The specifics of this system, better described as bandwidth-smoothing, are beyond the scope of this essay. A broad comparison of bandwidth-smoothing techniques as illustrated by W. Feng and J. Rexford is recommended for further reading \cite{bandwidthsmoothing}.
+\item \textbf{ChunkPack}: This interface stores components of map data in various possible class-specific ways, and provides the function \textit{generateChunk} such that it can inject itself into the Map. An example of a child class--\textbf{ChunkPack\_Delta}--is demonstrated in Fig. \ref{fig:clientsystem}.
+\end{itemize}
 
-The client side of the system we propose adopts the following hierarchy.
-
-\begin{figure}
+\subsection{Client system}
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\linewidth]{Client_Side_Streamer.png}
 	\caption{Partial class diagram illustrating the potential map streaming client},
 	\label{fig:clientsystem}
 \end{figure}
 
-- The Map Streamer is a Listener class. This is to enable it to receive data from any input. A particular benefit of this approach is the ability to add different sources of data; for example, a local cache so that a player can return to a region without redownloading it.
-- The \textbf{ChunkPack} is an interface that can manipulate map chunks by inserting or removing data of its choice. By leaving this responsibility to the ChunkPack class, subclasses such as \textbf{ChunkPackDelta} can be created to manipulate the chunk data in a more efficient or specific way than pure replacement. Chunks could even be moved, should the programmer add the ability to move the Earth--a programming habit whose prevalence has no clear evidence otherwise. This enforces expandability, which has more general positive (Cite etc) benefits.
-The \textbf{TimeMonitor}'s role is to ensure the map chunk generation can take place without a significant drop in frame rate. However, in order for the map to download at all, it must provide a minimum time space in case the machine is too slow to achieve it. A more advanced system may communicate with a hypothetical \textbf{FPSNormaliser} class, which records past processing times and reduces the framerate to a fixed, achievable value smoothest possible.
+To support the independence of the background download process, which focuses on delivering data in a time-sensitive manner, this process is divided into two concurrent threads. This system comprises the following key classes, some of which are shared with the Server system:
 
+\begin{itemize}
+\item \textbf{MapStreamer}: Responsible for collecting \textbf{ChunkPack}s and transferring them to the physical \textbf{Map} when it deems appropriate. This is another example of a Mediator. It relies on \textbf{TimeMonitor} to deliver the chunks smoothly.
+\item \textbf{TimeMonitor}: To ensure a smooth experience, this determines the amount of processing time to dedicate to chunk generation. This will be dependent on the game's other systems, and there are many factors to consider--such as used CPU time, network speed, the time it takes to generate an average chunk--to optimise this delivery time.
+\item \textbf{PlayerPerspective}: Responsible for informing the server where the player is in the map, so that the server can prioritise chunk delivery.
+\item \textbf{ChunkData\_Absolute}: Contains a complete map chunk at a certain level of detail.
+\item \textbf{ChunkData\_Delta}: Contains a map chunk in terms of changes that have occurred since an earlier version. This will be useful for player building events; for example, when a player constructs a wall. Contrast with rebuilding a mesh from scratch, this may return meshes that have been added or removed.
+\end{itemize}
 
-\section{Proposal}
-Due to an extreme lack of time and an extremely tired caffeine-free (and vitamin-deficient) author, a tacked-together solution is hastily proposed by this essay draft.
-
-\begin{figure}[H]
-	\includegraphics[width=0.7\linewidth]{Basic_Map_Streamer}
-	\caption{A class diagram demonstrating a map streaming component connected to a basic Map class.}
-	\label{fig:simplesystem}
-\end{figure}
-
-The class diagram above depicts the client end of the map streaming game component. As some partly-downloaded data is not needed by the game component until it's complete, the process is divided into two concurrent, non-conflicting threads. Flow takes place in the following fashion:
+The class diagram above depicts the client end of the map streaming game component. Flow takes place in the following fashion:
 
 \begin{figure}[H]
 	\includegraphics[width=0.7\linewidth]{Basic_Flowchart.png}
@@ -140,12 +137,10 @@ The class diagram above depicts the client end of the map streaming game compone
 
 In this example, the client begins by sending the player and camera location as soon as possible. Sometimes these two variables may be different: it is important that both areas are prepared for the player's viewing. The server is assumed to prioritise the level chunk geometry from closest to furthest.
 
-A \textbf{level chunk} is defined as a region of space where static level geometry resides. The shape of a level chunk varies across games, though in a building game, a uniform shape could be chosen such that there are no notable inefficiencies to building in one place over another. Existing games use various strategies. For example, Sunset Overdrive (Insomniac Games, 2014) used hexagonal chunks by design and radial chunks in practice. This was optimised for the player's freedom of movement. However, an earlier game by the same company, Fuse (Insomniac Games, 2013), used rectangular chunks. This was optimised for linear hall-based gameplay. (CITE ALL THIS).
+\section{Conclusion}
+A system architecture focusing on delivering data to the player in a consistent \cite{qoelargestudy} \cite{lagragequits}, immediately interactive \cite{motivation}, and smooth \cite{graphicsvsexperience} \cite{lagragequits} way is proposed to optimise the player experience. While the environment was states to be C++, it is likely that this architecture could be applied to most modern object-oriented languages.
 
-The \textbf{level streamer} is responsible for collecting \textbf{Chunk Packs} (partial, LOD-specific level chunk data downloaded from the server) and transferring them to the physical \textbf{Map} when it deems appropriate. In the above example, it does so as soon as it is immediately downloaded. However, it may benefit the player experience to record the amount of processing time spent during recent frames, and responding by slowing the conversion process or postponing it. This could help preserve a high frame rate and provide a smoother experience.
-
-\section{Total Conclusion}
-There are further systems to be explored, citations to be added and slightly passive-aggressive expressions of frustration to be passive-aggressively expressed at the recent surge in workload that are beyond the scope of this essay draft, and the author's physical capabilities at 3am, let alone intellectual ones. The author as such has little idea what they are doing and submits this draft to the peer review with great hesitation and a tear in his eye.
+There is much room for further research and expansion, including but not limited to compression, variable chunk scaling, texture streaming, gameplay element streaming and sound streaming techniques. Furthermore, lack of research on the impact of bandwidth on building games leaves the true fidelity and efficiency requirements of this system to be quite undefined. This may be prompted by the development of more games of this type, which could facilitate further research into the connectivity requirements globally. Noting the popularity of Fortnite today, which now matches Minecraft \cite{minecraftnite}, this could be expected to happen in the near future.
 
 \bibliography{references} 
 \bibliographystyle{ieeetr}
