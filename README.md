@@ -26,6 +26,12 @@ placing a value on Aesthetics in Online Casual Games
 
 Book: https://www.vlebooks.com/vleweb/Product/Index/993586?page=0
 
+Art of Game Design pages:
+- 133: player's mind
+147: player motivation
+260: loop of interaction
+385: the value of aesthetics
+
 # Proposal: Which C++ architecture(s) could best support QoE-oriented map streaming in a player-building-based multiplayer game?
 Free-to-play multiplayer games enjoy a high popularity in poorer countries such as China, Brazil and Mexico, yet the lower broadband speeds in these areas can pose a particular challenge to games with persistent player-built worlds. This type of world requires the server to upload level data periodically to players in order for them to enjoy the latest version of an area as they enter it. The game may thus employ several different compression, prioritisation and/or data rate compensation techniques in order to achieve smooth gameplay, even on a reliable network.  
 
